@@ -4,6 +4,8 @@
   "description": "Take care of a virtual pet!",
   "main": "index.js",
   "scripts": {
+    "start": "node server/index.js",
+    "dev": "concurrently --kill-others 'webpack --watch' 'nodemon server/index.js'",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "npx eslint .",
     "build": "webpack"
@@ -17,6 +19,7 @@
     "@babel/preset-react": "^7.28.5",
     "@eslint/js": "^9.39.2",
     "babel-loader": "^10.0.0",
+    "concurrently": "^9.2.1",
     "eslint": "^9.39.2",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.5.0",
