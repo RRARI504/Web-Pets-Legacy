@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Skill from './Skill';
+
 function SkillDashboard(props) {
 
 
@@ -7,7 +9,7 @@ function SkillDashboard(props) {
   return (
     <div>
       <h4>Skill Dashboard</h4>
-      {props.skillData.map((skill) => <p key={skill.name}>{skill.name}</p>)}
+      {props.skillData.map((skill) => <Skill key={skill.name} skill={skill} />)}
     </div>
   );
 }
