@@ -5,6 +5,7 @@ const MongoStore = require('connect-mongo').default;
 const passport = require('passport');
 
 const authRouter = require('./routers/auth.js');
+const petRouter = require('./routers/pet.js');
 const db = require('./db');
 
 const app = express();
@@ -25,6 +26,8 @@ app.use(session({
 app.use(passport.authenticate('session'));
 
 app.use('/', authRouter);
+// petRouter
+app.use('/pet', petRouter);
 
 app.listen(port, () => {
   console.info(`App available on http://localhost:${port} or http://127.0.0.1:${port}`);
