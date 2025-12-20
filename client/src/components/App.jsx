@@ -26,6 +26,7 @@ const App = () => {
       });
   };
 
+
   const { name } = user;
   return (
     <div>

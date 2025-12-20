@@ -28,7 +28,11 @@ const DeviceView = (props) => {
     if (props.user.name) {
       axios.get('/pet')
         .then(({ data }) => {
-          setPet(data); 
+          if(!data) {
+            setPet(defaultPet);
+          } else {
+            setPet(data);
+          }
         })
         .catch(err => {
           console.error('Could not get pet on client: ', err);
@@ -38,11 +42,19 @@ const DeviceView = (props) => {
     }
   }, [props.user.name]);
 
+  // const dummyPet = () => {
+  //   axios.post('/pet', {petName: 'susie'})
+  //     .catch((err) => {
+  //       console.error(err, 'coming from dummyPet');
+  //     });
+  // };
+  // dummyPet();
+
   return (
     <div id="device" style={cssTest}>
       this is the device :D
       <ScreenView pet={ pet } />
-      <DashboardView skillData={pet.training} user={props.user}/>
+      <DashboardView skillData={pet.training} user={props.user} />
     </div>
   );
 };

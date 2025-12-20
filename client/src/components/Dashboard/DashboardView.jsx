@@ -2,19 +2,18 @@
 import React, { useState } from 'react';
 
 import Skills from './Skills';
-
+import Statuses from './Statuses';
 const DashboardView = (props) => {
   const [ tab, setTab ] = useState('Skills');
 
 
   const { skillData, user } = props;
-  console.log(skillData);
   const tabs = ['Statuses', 'Interactions', 'Skills'];
 
   const renderTab = () => {
     switch (tab) {
       case 'Statuses':
-        return <p>Statuses</p>;
+        return <Statuses />;
       case 'Interactions':
         return <p>Interactions</p>;
       case 'Skills':
