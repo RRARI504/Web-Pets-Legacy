@@ -52,7 +52,33 @@ router.patch('/:id', (req, res)=> {
 
   const skillDelta = req.body.delta;
 
-  res.send('patch id');
+  Pet.findOne({userId})
+    .then((pet) => {
+      if (!pet) {
+        res.sendStatus(404);
+        return;
+      }
+
+      // find the correct skill in the pet's training array
+      const matchingSkills = pet.training.filter((skill) => skill._id === skillId);
+      if (!matchingSkills.length) {
+        res.sendStatus(404);
+        return;
+      }
+
+      // get the current stat for this skill and add the delta from the request body
+      const newStat = matchingSkills[0].stat + skillDelta;
+      console.log(newStat);
+
+      // update the skill
+      
+      console.log(pet);
+      res.send('patch id');
+    })
+    .catch((error) => {
+      console.error('Failed to find pet:', error);
+      res.sendStatus(500);
+    });
 });
 
 module.exports = router;
