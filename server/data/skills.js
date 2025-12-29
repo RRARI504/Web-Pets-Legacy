@@ -73,6 +73,51 @@ const skills = {
         max: 100
       }
     ]
+  },
+  "Hunting": {
+    love: 50,
+    behaviors: [
+      {
+        behavior: "ignores you.",
+        min: 0,
+        max: 40,
+        next: 30
+      },
+      {
+        behavior: "brings you a leaf.",
+        prev: 40,
+        min: 30,
+        max: 100,
+        next: 60
+      },
+      {
+        behavior: "brings you a rock.",
+        prev: 40,
+        min: 30,
+        max: 100,
+        next: 60
+      },
+      {
+        behavior: "brings you a dead bird.",
+        prev: 40,
+        min: 30,
+        max: 100,
+        next: 90
+      },
+      {
+        behavior: "brings you a dead rat.",
+        prev: 40,
+        min: 60,
+        max: 100,
+        next: 90
+      },
+      {
+        behavior: "brings you a shiny trinket.",
+        prev: 40,
+        min: 90,
+        max: 100,
+      }
+    ]
   }
 };
 
