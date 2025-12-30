@@ -23,7 +23,7 @@ const DeviceView = ({user}) => {
   ];
 
   const refreshPet = () => {
-    if (props.user.name) {
+    if (user.name) {
       axios.get('/pet')
       .then(({ data }) => {
         if(!data) {
@@ -40,7 +40,7 @@ const DeviceView = ({user}) => {
     }
   };
 
-  useEffect(refreshPet, [props.user.name]);
+  useEffect(refreshPet, [user.name]);
 
   const refreshSkillData = function() {
     axios.get('/training')
@@ -92,3 +92,4 @@ const DeviceView = ({user}) => {
 };
 
 export default DeviceView;
+
