@@ -1,22 +1,41 @@
 
-const { default: axios } = require('axios');
+// const { default: axios } = require('axios');
 const express = require('express');
 const router = express.Router();
 
 const { Pet } = require('../db');
 
-router.patch('/hunger/:val', (req, res) => {
+router.patch('/:status', (req, res) => {
   const { passport } = req.session;
-  // console.log(passport);
+  const { status } = req.params;
+  const { amount } = req.body;
+  
+  const patchedObj = {};
+  patchedObj[status] = amount;
+
+  if (passport) {
+    Pet.findOneAndUpdate({ userId: passport.user.id }, patchedObj)
+      .then(pet => {
+        if (pet) {
+          res.sendStatus(200);
+        } else {
+          res.sendStatus(404);
+        }
+      })
+      .catch(err => {
+        console.error('Unable to find pet and update in interaction route: ', err);
+        res.sendStatus(500);
+      });
+  }
   // Pet.findOneAndUpdate
 });
 
-router.patch('/mood/:val', (req, res) => {
-  const { passport } = req.session;
-});
+// router.patch('/mood', (req, res) => {
+//   const { passport } = req.session;
+// });
 
-router.patch('/love/:val', (req, res) => {
-  const { passport } = req.session;
-});
+// router.patch('/love', (req, res) => {
+//   const { passport } = req.session;
+// });
 
 module.exports = router;
