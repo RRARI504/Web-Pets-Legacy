@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 /**
- * @module SkillDashboard
+ * @module Skills
  * @description A component that displays and interacts with the pet's skills.
  * Allows the user to view the pet's current skill levels, to train a skill, to learn a new skill, and to forget existing skills.
  */
-function SkillDashboard({ skills, availableSkills, behaviors, behaviorMessage, refreshSkillData }) {
+function Skills({ skills, availableSkills, behaviors, behaviorMessage, refreshSkillData }) {
   /**
    * A state variable that controls the rendering of the skill change menu. Toggled by clicking the 'Change Skills' heading.
    * @type {boolean}
@@ -129,4 +129,4 @@ function SkillDashboard({ skills, availableSkills, behaviors, behaviorMessage, r
   );
 }
 
-export default SkillDashboard;
+export default Skills;
