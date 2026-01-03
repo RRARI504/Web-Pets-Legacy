@@ -48,7 +48,6 @@ const handleTimer = () => {
   if (new Date() - twelveOClock >= 0) {
     updateAllPets();
     twelveOClock.setDate(twelveOClock.getDate() + 1);
-    console.log(twelveOClock);
     handleTimer();
   }
   else { setTimeout(handleTimer, 1_000); console.log(Math.floor((new Date() - twelveOClock) / 1000), twelveOClock.toLocaleString()); }
@@ -58,3 +57,4 @@ module.exports = {
   updateAllPets,
   handleTimer,
 };
+
