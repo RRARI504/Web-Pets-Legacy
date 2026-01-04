@@ -67,7 +67,7 @@ const updateAllPets = () => {
         } else {
           Pet.findByIdAndUpdate(pet._id, newStats, { new: true })
             .then(() => {
-              User.findByIdAndUpdate({status: 'normal'});
+              User.findByIdAndUpdate({status: 'befriending'});
             })
             .catch(err => {
               console.error('Unable to update a pet in database from updates: ', err);

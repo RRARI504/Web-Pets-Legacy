@@ -110,8 +110,11 @@ const ScreenView = ({ pet, user, message , initPet}) => {
   const chooseImage = () => {
     //TODO: choose gif variants based on weather
     const { condition } = weather;
+    const { status } = user;
 
-    if (pet === null) {
+    if (status === 'adopted') {
+      return 'endingScreen.gif';
+    } else if (pet === null) {
       return '/noPet.png';
     } else {
       // if (/sunny|clear/.test(condition)) { return '/sunny.gif'; }

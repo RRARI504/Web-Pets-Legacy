@@ -28,7 +28,11 @@ const App = () => {
   useEffect(() => {
     axios.get('/user')
       .then(({ data }) => {
-        setUser({ name: data });
+        if (data !== null) {
+          setUser(data);
+        } else {
+          setUser({name: null});
+        }
       })
       .catch(err => {
         console.error('Could not get user from client: ', err);

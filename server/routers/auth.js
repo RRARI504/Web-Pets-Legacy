@@ -105,7 +105,18 @@ router.get('/oauth2/redirect/google', passport.authenticate('google', {
  */
 router.get('/user', (req, res) => {
   const { passport } = req.session;
-  res.send(passport ? passport.user.name : null);
+  if (passport) {
+    User.findById(passport.user.id)
+      .then((user) => {
+        res.status(200).send(user);
+      })
+      .catch((error) => {
+        console.error('Failed to find user:', error);
+        res.sendStatus(500);
+      })
+  } else {
+    res.status(200).send(null);
+  }
 });
 
 /**
