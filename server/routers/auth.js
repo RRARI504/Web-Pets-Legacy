@@ -113,7 +113,29 @@ router.get('/user', (req, res) => {
       .catch((error) => {
         console.error('Failed to find user:', error);
         res.sendStatus(500);
+      });
+  } else {
+    res.status(200).send(null);
+  }
+});
+
+/**
+ * Allows the client to update just the user's stats (pet win/loss counter, current pet status) without replacing the entire user object.
+ * This currently is only used to update the user's status (adopted/disappeared/befriending) after adopting a new pet, but could assist in auto-updating the client
+ * after the server's midnight update.
+ * @name GET /user/stats
+ */
+router.get('/user/stats', (req, res) => {
+  const { passport } = req.session;
+  if (passport) {
+    User.findById(passport.user.id)
+      .then(({petsAdopted, petsDisappeared, status}) => {
+        res.status(200).send({petsAdopted, petsDisappeared, status});
       })
+      .catch((error) => {
+        console.error('Failed to find user:', error);
+        res.sendStatus(500);
+      });
   } else {
     res.status(200).send(null);
   }

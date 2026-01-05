@@ -16,7 +16,7 @@ import axios from 'axios';
  * @name ScreenView
  */
 
-const ScreenView = ({ pet, user, message , initPet}) => {
+const ScreenView = ({ pet, user, message, initPet, refreshUserStats}) => {
 
   const refreshTime = 30 * 60 * 1000; // <- 30 minutes
 
@@ -68,7 +68,8 @@ const ScreenView = ({ pet, user, message , initPet}) => {
     }
     axios.post('/pet', { name })
       .then(() => {
-        initPet();
+        refreshUserStats(); // update the user's stats to make sure the status is set to 'befriending'
+        initPet(); // get all the data for the new pet
       })
       .catch((err) => {
         console.error(err, 'coming from screenView');
