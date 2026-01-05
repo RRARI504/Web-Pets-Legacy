@@ -1,11 +1,6 @@
 ## Web Pets
 
-Outline:
-description of project
-explain all the scripts
--how to build and run
--how to generate documentation
-
+Welcome to Web Pets! You've found a stray alley cat, and now it falls to you to care for it. If you treat it well, it might even go home with you one day.
 
 ### Getting Started
 
@@ -27,6 +22,14 @@ npm start
 See `server/.env.example` for a template file.
 
 ### Scripts
+
+* `npm start` - starts the application.
+* `npm run dev` - starts the application and watch for changes. Automatically rebuilds and restarts for server, component, and styling changes.
+* `npm run lint` - lints all files.
+* `npm run build` - builds the client-side application using Webpack and Babel.
+* `npm run style` - generates CSS using Tailwind.
+* `npm run style:dev`- generates CSS and watches for changes.
+* `npm run doc` - generates documentation using JSDoc. Documentation files are served statically at the `/docs` endpoint, or can be accessed directly by navigating to the generated files in the web browser.
 
 ### Tech Stack
 
