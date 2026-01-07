@@ -5,6 +5,7 @@ const MongoStore = require('connect-mongo').default;
 const passport = require('passport');
 
 const authRouter = require('./routers/auth.js');
+const deviceColor = require('./routers/user.js');
 const petRouter = require('./routers/pet.js');
 const trainingRouter = require('./routers/training');
 const interactRouter = require('./routers/interaction.js');
@@ -31,6 +32,7 @@ app.use(passport.authenticate('session'));
 
 app.use('/', authRouter);
 // petRouter
+app.use('/user', deviceColor);
 app.use('/pet', petRouter);
 app.use('/interact', interactRouter);
 app.use('/weather', weatherRouter);
