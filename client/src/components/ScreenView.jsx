@@ -143,7 +143,10 @@ const ScreenView = ({ pet, user, message, initPet, refreshUserStats}) => {
  */
   return (
     <div className={ styles.screen.join(' ')} style={{"borderStyle": "inset"}}>
-      <img src={chooseImage()} className="w-full" style={{"imageRendering": "pixelated"}}/>
+      <div className="w-half h-full grid place-items-center [grid-template-areas:'stack']">
+        <img src={chooseImage()} className="w-full [grid-area:stack]" style={{"imageRendering": "pixelated"}}/>
+        <img src={'/legacyCatSprite.gif'} className="translate-y-3/4 h-1/3 [grid-area:stack] object-contain aspect-square inset-y-3/4" style={{"imageRendering": "pixelated"}}/>
+      </div>
       <div className="bg-[#333032] text-white h-[4.5rem]">
         <p className="h-[1.5rem]">{message}</p>
         <button onClick={ refreshWeather } >{ weather.condition }</button>
