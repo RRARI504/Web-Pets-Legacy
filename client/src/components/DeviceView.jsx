@@ -1,61 +1,91 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import ScreenView from "./ScreenView";
+import DashboardView from "./Dashboard/DashboardView";
 
-import ScreenView from './ScreenView';
-import DashboardView from './Dashboard/DashboardView';
+// Calculate brightness based on RGB
+function getLuminance(rgb) {
+  return (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+}
+// converts hex code to RGB value
+function hexToRgb(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null;
+}
+
+// gives the color of text/border to be used based on hex/luminance
+function getContrastTBColor(hexColor) {
+  const rgb = hexToRgb(hexColor);
+
+  const luminance = getLuminance(rgb);
+
+  return luminance > 128 ? "black" : "white";
+}
 
 /**
  * @module DeviceView
  * @description The component that controls most of the game client-side. It handles fetching and storing
  * pet data and passing data down to subcomponents.
-*/
-const DeviceView = ({user, refreshUserStats}) => {
+ */
+const DeviceView = ({ user, refreshUserStats, refreshDeviceColorData }) => {
+
+  const [currentDeviceColor, setCurrentDeviceColor] = useState(user.deviceColor);
+  /**
+   * A state variable that holds text/border color choice based on user device color choice.
+   * @type {string}
+   * @name contrastTB
+   */
+  const [contrastTB, setContrastTB] = useState("");
   /**
    * A state variable that holds all pet data returned from the server.
    * @type {object}
    * @name pet
    */
-  const [ pet, setPet ] = useState(null);
+  const [pet, setPet] = useState(null);
   /**
    * A state variable that is passed down to render a message on ScreenView.
    * @type {string}
    * @name message
    */
-  const [ message, setMessage ] = useState('');
+  const [message, setMessage] = useState("");
   /**
    * A state variable that holds the skills currently available for the pet to learn.
    * @type {array}
    * @name availableSkills
    */
-  const [ availableSkills, setAvailableSkills ] = useState([]);
+  const [availableSkills, setAvailableSkills] = useState([]);
   /**
    * A state variable that holds the behaviors a pet can currently choose from.
    * @type {object}
    * @name behaviors
    */
-  const [ behaviors, setBehaviors ] = useState([]);
+  const [behaviors, setBehaviors] = useState([]);
   /**
    * A state variable that stores the name currently typed into the change pet name field.
    * Used by changePetName to send PATCH requests.
    * @type {string}
    * @name name
-  */
-  const [name, setName] = useState('');
+   */
+  const [name, setName] = useState("");
 
   const deviceStyles = [
-    'bg-device', // background color
-    'sm:rounded-[2rem]', // border radius
-    'sm:shadow-lg/100', // shadow for dimensionality
-    'sm:inset-shadow-sm', // inset shadow gives a bit of shine
-    'sm:inset-shadow-white/50', // change inset shadow color
-    'sm:m-[20px]', // margin
-    'p-[2rem]', // padding
-    'w-full',
-    'max-w-[1250px]',
-    'sm:justify-self-center'
+    "sm:rounded-[2rem]", // border radius
+    "sm:shadow-lg/100", // shadow for dimensionality
+    "sm:inset-shadow-sm", // inset shadow gives a bit of shine
+    "sm:inset-shadow-white/50", // change inset shadow color
+    "sm:m-[20px]", // margin
+    "p-[2rem]", // padding
+    "w-full",
+    "max-w-[1250px]",
+    "sm:justify-self-center"
   ];
-
   /**
    * Fetches all pet data needed to initiate the game. This includes not just the pet object,
    * but also availableSkills and behaviors. This prevents having to call both refreshPet and
@@ -66,7 +96,8 @@ const DeviceView = ({user, refreshUserStats}) => {
    */
   const initPet = () => {
     if (user.name) {
-      axios.get('/init')
+      axios
+        .get("/init")
         .then(({ data }) => {
           if (!data) {
             setPet(null);
@@ -80,7 +111,7 @@ const DeviceView = ({user, refreshUserStats}) => {
           }
         })
         .catch((error) => {
-          console.error('Failed to GET initial pet data:', error);
+          console.error("Failed to GET initial pet data:", error);
         });
     } else {
       setPet(null);
@@ -98,17 +129,18 @@ const DeviceView = ({user, refreshUserStats}) => {
    */
   const refreshPet = () => {
     if (user.name) {
-      axios.get('/pet')
-      .then(({ data }) => {
-        if(!data) {
-          setPet(null);
-        } else {
-          setPet(data);
-        }
-      })
-      .catch(err => {
-        console.error('Could not get pet on client: ', err);
-      });
+      axios
+        .get("/pet")
+        .then(({ data }) => {
+          if (!data) {
+            setPet(null);
+          } else {
+            setPet(data);
+          }
+        })
+        .catch((err) => {
+          console.error("Could not get pet on client: ", err);
+        });
     } else {
       setPet(null);
     }
@@ -121,25 +153,27 @@ const DeviceView = ({user, refreshUserStats}) => {
    * other stats.
    * @name refreshSkillData
    * @function
-  */
-  const refreshSkillData = function(updateTrainingData = true) {
-    axios.get('/training/')
+   */
+  const refreshSkillData = function (updateTrainingData = true) {
+    axios
+      .get("/training/")
       .then(({ data: { training, available, behaviors } }) => {
         // if the whole pet object has just been fetched, (e.g. on login),
         // there's no need to update pet.training and risk some sort of state conflict
         if (updateTrainingData) {
           setPet({
             ...pet,
-            training
+            training,
           });
         }
         setAvailableSkills(available);
         setBehaviors(behaviors);
       })
       .catch((error) => {
-        console.error('Failed to get pet skill data:', error);
+        console.error("Failed to get pet skill data:", error);
       });
   };
+  
 
   /**
    * A function that sets the message that is rendered by ScreenView.
@@ -148,7 +182,7 @@ const DeviceView = ({user, refreshUserStats}) => {
    * @name displayMessage
    * @function
    */
-  const displayMessage = function(message) {
+  const displayMessage = function (message) {
     setMessage(message);
   };
 
@@ -157,8 +191,8 @@ const DeviceView = ({user, refreshUserStats}) => {
    * by components that don't have access to the entire pet object.
    * @name behaviorMessage
    * @function
-  */
-  const behaviorMessage = function(behavior) {
+   */
+  const behaviorMessage = function (behavior) {
     displayMessage(`${pet.name} ${behavior}`);
   };
 
@@ -166,11 +200,12 @@ const DeviceView = ({user, refreshUserStats}) => {
    * Sends a DELETE pet request to the server.
    * @name deletePet
    * @function
-  */
+   */
   const deletePet = () => {
-    axios.delete('/pet')
+    axios
+      .delete("/pet")
       .then(() => {
-        displayMessage('Welcome to Web Pets!');
+        displayMessage("Welcome to Web Pets!");
         refreshPet();
       })
       .catch((err) => {
@@ -182,9 +217,10 @@ const DeviceView = ({user, refreshUserStats}) => {
    * Sends a PATCH request to the server to update the current pet's name.
    * @name changePetName
    * @function
-  */
+   */
   const changePetName = () => {
-    axios.patch('/pet', {name})
+    axios
+      .patch("/pet", { name })
       .then(() => {
         refreshPet();
       })
@@ -207,53 +243,66 @@ const DeviceView = ({user, refreshUserStats}) => {
    */
   useEffect(() => {
     switch (user.status) {
-      case 'adopted':
-        displayMessage('Your pet loves you!');
+      case "adopted":
+        displayMessage("Your pet loves you!");
         break;
-      case 'disappeared':
-        displayMessage('Your pet is nowhere to be found.');
+      case "disappeared":
+        displayMessage("Your pet is nowhere to be found.");
         break;
-      case 'befriending':
-        displayMessage('Your pet is waiting for you.');
+      case "befriending":
+        displayMessage("Your pet is waiting for you.");
         break;
       default:
-        displayMessage('Welcome to Web Pets!');
+        displayMessage("Welcome to Web Pets!");
         break;
     }
   }, [user.status]);
 
+  useEffect(() => {
+    setContrastTB(getContrastTBColor(user.deviceColor));
+  }, [user.deviceColor]);
+
   return (
-    <div id="device" className={ deviceStyles.join(' ') }>
+    // background color set dynamically using style property + stored user defined color, default to sky blue if they have nothing chosen
+    <div
+      id="device"
+      className={deviceStyles.join(" ")}
+      style={{ backgroundColor: user.deviceColor, color: contrastTB }}
+    >
       <div className="relative h-[65px]">
         <div className="absolute right-[50px] bottom-[-23px] flex flex-col gap-3">
           <div className="flex items-center gap-2">
-            <input type='text'
-            value={name}
-            className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 py-2 shadow-xs placeholder:'text-body'"
-            placeholder='Change pet name'
-            onChange={(e) => setName(e.target.value)}/>
+            <input
+              type="text"
+              value={name}
+              className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 py-2 shadow-xs placeholder:'text-body' placeholder-current"
+              placeholder="Change pet name"
+              onChange={(e) => setName(e.target.value)}
+            />
             <button
-            onClick={changePetName}
-            className="text-black bg-blue box-border border border-black hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none"
+              onClick={changePetName}
+              className="bg-blue box-border border hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none"
             >
               Submit
-              </button>
+            </button>
           </div>
           <button
-          onClick={deletePet}
-          className="text-black bg-blue box-border border border-black hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none"
+            onClick={deletePet}
+            className="bg-blue box-border border hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none"
           >
-            Delete Pet</button>
-
+            Delete Pet
+          </button>
         </div>
       </div>
       <h1 className="text-[25px]">Web Pets</h1>
       <ScreenView
-        pet={ pet }
-        user = {user}
+        pet={pet}
+        user={user}
         message={message}
         initPet={initPet}
         refreshUserStats={refreshUserStats}
+        deviceColor={user.deviceColor}
+        contrastTB={contrastTB}
       />
       <DashboardView
         pet={pet}
@@ -264,10 +313,12 @@ const DeviceView = ({user, refreshUserStats}) => {
         displayMessage={displayMessage}
         refreshSkillData={refreshSkillData}
         refreshPet={refreshPet}
+        contrastTB={contrastTB}
+        refreshDeviceColorData={refreshDeviceColorData}
+        setContrastTB={setContrastTB}
       />
     </div>
   );
 };
 
 export default DeviceView;
-

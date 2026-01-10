@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import Skills from './Skills';
 import Statuses from './Statuses';
 import Interactions from './Interactions';
+import Profile from './Profile';
 
-const DashboardView = ({ pet, user, availableSkills, behaviors, behaviorMessage, displayMessage, refreshSkillData, refreshPet }) => {
+const DashboardView = ({ pet, user, availableSkills, behaviors, behaviorMessage, displayMessage, refreshSkillData, refreshPet, contrastTB, setContrastTB, refreshDeviceColorData}) => {
   /**
    * A state variable determines which tab in the dashboard should be rendered. Selected by clicking the tab buttons location in the dashboard.
    * @type {string}
@@ -13,7 +14,7 @@ const DashboardView = ({ pet, user, availableSkills, behaviors, behaviorMessage,
   */
   const [ tab, setTab ] = useState('Interactions');
 
-  const tabs = ['Interactions', 'Skills'];
+  const tabs = ['Interactions', 'Skills', 'Profile'];
 
   // original: style={{ border: '1px solid black', marginTop: '5px' }}
   const dashBoardStyles = [
@@ -23,7 +24,7 @@ const DashboardView = ({ pet, user, availableSkills, behaviors, behaviorMessage,
 
   const tabStyles = [
     'border-2',
-    'border-black',
+    `border-${contrastTB}`,
     'mx-[4px]',
     'mt-[10px]',
     'mb-[-2px]', // make the lines on the labels line up with the tab views
@@ -42,7 +43,7 @@ const DashboardView = ({ pet, user, availableSkills, behaviors, behaviorMessage,
     if (pet) {
       switch (tab) {
         case 'Interactions':
-          return <Interactions pet={ pet } refreshPet={refreshPet} displayMessage={displayMessage}/>;
+          return <Interactions pet={ pet } refreshPet={refreshPet} displayMessage={displayMessage} contrastTB={contrastTB}/>;
         case 'Skills':
           return <Skills
             skills={pet.training}
@@ -51,14 +52,17 @@ const DashboardView = ({ pet, user, availableSkills, behaviors, behaviorMessage,
             behaviors={behaviors}
             behaviorMessage={behaviorMessage}
             refreshSkillData={refreshSkillData}
+            contrastTB={contrastTB}
           />;
+          case 'Profile':
+            return <Profile user={user} contrastTB={contrastTB} refreshDeviceColorData={refreshDeviceColorData} setContrastTB={setContrastTB}/>;
         default:
           return null;
       }
     } else if (user.name) {
-      return <p className="border-2 border-black p-[10px]">Adopt a pet to show its data!</p>;
+      return <p className="border-2 border-white p-[10px]">Adopt a pet to show its data!</p>;
     } else {
-      return <p className="border-2 border-black p-[10px]">Please sign in</p>;
+      return <p className="border-2 border-white p-[10px]">Please sign in</p>;
     }
   };
 
