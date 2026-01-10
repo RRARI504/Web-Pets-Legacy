@@ -8,7 +8,7 @@ import Interactions from './Interactions';
 import ProfileView from '../ProfileView.jsx'
 import Profile from './Profile';
 
-const DashboardView = ({ pet, archivedPets, user, availableSkills, behaviors, behaviorMessage, displayMessage, refreshSkillData, refreshPet, contrastTB, setContrastTB, refreshDeviceColorData}) => {
+const DashboardView = ({ pet, archivedPets, user, availableSkills, behaviors, behaviorMessage, displayMessage, refreshSkillData, refreshPet, contrastTB, refreshDeviceColorData}) => {
   /**
    * A state variable determines which tab in the dashboard should be rendered. Selected by clicking the tab buttons location in the dashboard.
    * @type {string}
