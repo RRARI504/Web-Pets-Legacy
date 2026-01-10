@@ -34,6 +34,39 @@ router.get('/', (req, res) => {
 });
 
 /**
+ * @module pet-routers
+ * @description
+ */
+
+/**
+ * This get request handling will fetch the pet data from the database based on the pets specific ID
+ * @name GET /pet
+ */
+router.get('/:id', (req, res) => {
+  // if user is signed in - we check the session to see if the passport exist
+  const { passport } = req.session;
+  if (!passport) {
+   res.sendStatus(401);
+  }
+  //query db find pet doc by id
+  Pet.findById(req.params.id)
+  .then((pet) => {//get pet data
+    if(!pet){
+      return res.sendStatus(401);
+    }
+    res.status(200).send(pet)
+
+  }).catch((err) => {
+    console.log('Could not find that pet!:', err)
+    res.sendStatus(500);
+  })
+});
+
+
+
+
+
+/**
  * This is the post handling that will handle the post request the user sends when they want to create a pet.
  * It will check if there is an active session for the user that is trying to create a pet. If there is no
  * session - meaning the user is NOT signed in - it will not allow them to create a pet. If a session exist for

@@ -1,9 +1,11 @@
 
 import React, { useState } from 'react';
 
+
 import Skills from './Skills';
 import Statuses from './Statuses';
 import Interactions from './Interactions';
+import ProfileView from '../ProfileView.jsx'
 
 const DashboardView = ({ pet, user, availableSkills, behaviors, behaviorMessage, displayMessage, refreshSkillData, refreshPet }) => {
   /**
@@ -13,7 +15,7 @@ const DashboardView = ({ pet, user, availableSkills, behaviors, behaviorMessage,
   */
   const [ tab, setTab ] = useState('Interactions');
 
-  const tabs = ['Interactions', 'Skills'];
+  const tabs = ['Interactions', 'Skills', 'Profile'];
 
   // original: style={{ border: '1px solid black', marginTop: '5px' }}
   const dashBoardStyles = [
@@ -40,7 +42,10 @@ const DashboardView = ({ pet, user, availableSkills, behaviors, behaviorMessage,
    */
   const renderTab = () => {
     if (pet) {
+
       switch (tab) {
+        case 'Profile':
+          return <ProfileView pet={pet} />;
         case 'Interactions':
           return <Interactions pet={ pet } refreshPet={refreshPet} displayMessage={displayMessage}/>;
         case 'Skills':
