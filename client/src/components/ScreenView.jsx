@@ -16,24 +16,24 @@ import axios from 'axios';
  * @name ScreenView
  */
 
-const ScreenView = ({ pet, user, message, initPet, refreshUserStats}) => {
+const ScreenView = ({ pet, user, message, initPet, refreshUserStats, deviceColor, contrastTB}) => {
 
   const refreshTime = 30 * 60 * 1000; // <- 30 minutes
 
   const styles = {
     screen: [ // { border: '5px inset hotpink', height: '360px', margin: '5px', backgroundColor: 'lavender' }
       'border-10', // border width
-      'border-[#a1e7ff]', // border color - a lighter version of the device color to make the inset look right
-      'bg-indigo-50', // background color
+      'bg-blue-50', // background color
       'm-bottom-[5px]',
       'm-top-[10px]',
     ],
     input: [
       'rounded-md', // border radius
-      'border-2', // border width
+      'border-2 ', // border width
+      `border-${contrastTB}`
     ],
     popup: [
-      'text-white',
+      `text-${contrastTB}`,
       'place-self-center',
       'bg-[#333032]'
     ]
@@ -163,7 +163,7 @@ const ScreenView = ({ pet, user, message, initPet, refreshUserStats}) => {
   //   return '/noPet.png';
   // } 
   return (
-    <div className={ styles.screen.join(' ')} style={{"borderStyle": "inset"}}>
+    <div className={ styles.screen.join(' ')} style={{"borderStyle": "inset", borderColor: `color-mix(in oklch, ${deviceColor}, white 30%)`}}>
       <div className="w-half h-full grid place-items-center [grid-template-areas:'stack']">
         <img src={chooseImage()} className="w-full [grid-area:stack]" style={{"imageRendering": "pixelated"}}/>
         {pet === null ? <></> : <img src={choosePetImage()} className="translate-y-3/5 h-5/12 [grid-area:stack] object-contain aspect-square inset-y-3/4" style={{"imageRendering": "pixelated"}}/>}
