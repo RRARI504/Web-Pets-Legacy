@@ -6,7 +6,7 @@ import Skills from './Skills';
 import Statuses from './Statuses';
 import Interactions from './Interactions';
 import ProfileView from '../ProfileView.jsx'
-import Profile from './Profile';
+import Customization from './Customization';
 
 
 const DashboardView = ({ pet, archivedPets, user, availableSkills, behaviors, behaviorMessage, displayMessage, refreshSkillData, refreshPet, contrastTB, refreshDeviceColorData}) => {
@@ -17,7 +17,7 @@ const DashboardView = ({ pet, archivedPets, user, availableSkills, behaviors, be
   */
   const [ tab, setTab ] = useState('Interactions');
 
-  const tabs = ['Interactions', 'Skills', 'Profile', 'Profile'];
+  const tabs = ['Interactions', 'Skills', 'Profile', 'Customization'];
 
   // original: style={{ border: '1px solid black', marginTop: '5px' }}
   const dashBoardStyles = [
@@ -60,8 +60,8 @@ const DashboardView = ({ pet, archivedPets, user, availableSkills, behaviors, be
             refreshSkillData={refreshSkillData}
             contrastTB={contrastTB}
           />;
-          case 'Profile':
-            return <Profile contrastTB={contrastTB} refreshDeviceColorData={refreshDeviceColorData}/>;
+          case 'Customization':
+            return <Customization contrastTB={contrastTB} refreshDeviceColorData={refreshDeviceColorData}/>;
         default:
           return null;
       }
