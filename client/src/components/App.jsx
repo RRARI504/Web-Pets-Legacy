@@ -3,6 +3,9 @@ import axios from 'axios';
 
 import DeviceView from './DeviceView';
 
+
+
+
 /**
  * The root component of Web Pets. This component handles logging in and out,
  * and renders the DeviceView which contains the rest of the game.
@@ -18,7 +21,13 @@ const App = () => {
    * @property {string} name - used by App to determine if the user is logged in or out. If user.name is an empty string,
    * the user is assumed to be logged out.
    */
-  const [ user, setUser ] = useState({ name: '' });
+  const [ user, setUser ] = useState({name: ''});
+  /**
+   * A state variable that holds text/border color choice based on user device color choice.
+   * @type {string}
+   * @name contrastTB
+   */
+  const [contrastTB, setContrastTB] = useState("");
 
   /**
    * App requests user data from the server at startup using useEffect.
@@ -39,6 +48,11 @@ const App = () => {
       });
   }, []);
 
+    useEffect(() => {
+      const color = user.deviceColor || "#87cefa";
+      setContrastTB(getContrastTBColor(color));
+    }, [user.deviceColor]);
+
   /**
    * Logs the user out and clears the user object.
    * @name handleLogout
@@ -47,7 +61,7 @@ const App = () => {
   const handleLogout = function() {
     axios.post('/logout', {})
       .then(() => {
-        setUser({ name: '' });
+        setUser({name: ''});
       })
       .catch(err => {
         console.error('Could not post from client: ', err);
@@ -68,16 +82,70 @@ const App = () => {
             ...user,
             petsAdopted,
             petsDisappeared,
-            status
+            status,
           });
         } else {
-          setUser({name: null});
+          setUser({name: ''});
         }
       })
       .catch(err => {
         console.error('Could not get user from client: ', err);
       });
   };
+
+    const refreshDeviceColorData = () => {
+        axios
+          .get("/user/current-device-color")
+            .then(({ data }) => {
+              if (data !== null) {
+              const { deviceColor } = data;
+              setUser({
+                ...user,
+                deviceColor
+              });
+            } else {
+              setUser({
+                name: ''
+              });
+            }
+          })
+          .catch((err) => {
+            console.error("Could not get new device data on client: ", err);
+          });
+      };
+
+      
+      // gives the color of text/border to be used based on hex/luminance
+      const getContrastTBColor = (hexColor) => {
+        const rgb = hexToRgb(hexColor);
+        
+        const luminance = getLuminance(rgb);
+        
+        return luminance > 128 ? "black" : "white";
+        
+        // converts hex code to RGB value
+        function hexToRgb(hex) {
+          const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+          return result
+          ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16),
+          }
+          : null;
+        }
+        
+        // Calculate brightness based on RGB
+        function getLuminance(rgb) {
+          return (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+        }
+
+        // Calculate brightness based on RGB
+        function getLuminance(rgb) {
+          return (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+        }
+      };
+
 
   /**
    * Sends a request to the server to trigger a pet update now instead of waiting for midnight. Strictly for debugging/demo.
@@ -102,10 +170,10 @@ const App = () => {
     const { name, petsAdopted = 0, petsDisappeared = 0 } = user;
     if (name) {
       return (
-        <div>
-          <h2>{`Currently logged in as ${name}`}</h2>
-          <p>You have adopted {petsAdopted} pet{petsAdopted === 1 ? '' : 's'} and lost {petsDisappeared} pet{petsDisappeared === 1 ? '' : 's'}.</p>
-          <button onClick={handleLogout}>Logout</button>
+        <div style={{ color: contrastTB }}>
+          <h2 >{`Currently logged in as ${name}`}</h2>
+          <p >You have adopted {petsAdopted} pet{petsAdopted === 1 ? '' : 's'} and lost {petsDisappeared} pet{petsDisappeared === 1 ? '' : 's'}.</p>
+          <button onClick={handleLogout} >Logout</button>
         </div>
       );
     } else {
@@ -120,9 +188,9 @@ const App = () => {
     <div className='sm:grid sm:grid-flow-row sm:m-[40px]'>
       <div className="p-[10px] sm:p-[0px]">
         {renderAuthData()}
-        <button onClick={forceServerUpdate}>Update Now</button>
+        <button onClick={forceServerUpdate} style={{ color: contrastTB }}>Update Now</button>
       </div>
-      <DeviceView user={user} refreshUserStats={refreshUserStats}/>
+      {<DeviceView user={user} refreshUserStats={refreshUserStats} refreshDeviceColorData={refreshDeviceColorData} contrastTB={contrastTB}/>}
     </div>
   );
 };

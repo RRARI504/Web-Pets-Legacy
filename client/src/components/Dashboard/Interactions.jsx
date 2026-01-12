@@ -7,11 +7,11 @@ import axios from 'axios';
  * @description A component that displays and interacts with the pet's statuses.
  * Allows the user to increase the pet's stats, which will decay each day.
  */
-const Interactions = ({ pet, refreshPet, displayMessage }) => {
+const Interactions = ({ pet, refreshPet, displayMessage, contrastTB }) => {
 
   const interactionTabStyles = [
     'border-2',
-    'border-black',
+    `border-${contrastTB}`,
     'p-[10px]'
   ];
 
