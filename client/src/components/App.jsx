@@ -18,7 +18,7 @@ const App = () => {
    * @property {string} name - used by App to determine if the user is logged in or out. If user.name is an empty string,
    * the user is assumed to be logged out.
    */
-  const [ user, setUser ] = useState({ name: '' });
+  const [ user, setUser ] = useState({name: ''});
 
   /**
    * App requests user data from the server at startup using useEffect.
@@ -68,7 +68,7 @@ const App = () => {
             ...user,
             petsAdopted,
             petsDisappeared,
-            status
+            status,
           });
         } else {
           setUser({name: null});
@@ -78,6 +78,21 @@ const App = () => {
         console.error('Could not get user from client: ', err);
       });
   };
+
+    const refreshDeviceColorData = () => {
+        axios
+          .get("/user/current-device-color")
+            .then(({ data }) => {
+              const { deviceColor } = data;
+              setUser({
+                ...user,
+                deviceColor
+              });
+          })
+          .catch((err) => {
+            console.error("Could not get new device data on client: ", err);
+          });
+      };
 
   /**
    * Sends a request to the server to trigger a pet update now instead of waiting for midnight. Strictly for debugging/demo.
@@ -122,7 +137,7 @@ const App = () => {
         {renderAuthData()}
         <button onClick={forceServerUpdate}>Update Now</button>
       </div>
-      <DeviceView user={user} refreshUserStats={refreshUserStats}/>
+      {user.name !== '' ? <DeviceView user={user} refreshUserStats={refreshUserStats} refreshDeviceColorData={refreshDeviceColorData}/>  : null}
     </div>
   );
 };

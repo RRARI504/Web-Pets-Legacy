@@ -2,20 +2,38 @@ const express = require("express");
 const router = express.Router();
 const { User } = require("../db");
 
+
+
+// used to display updated device color when user hits apply change button from profile
+router.get("/current-device-color", async (req, res) => {
+  const { passport } = req.session;
+  if (passport) {
+    User.findById(passport.user.id)
+      .then(({deviceColor}) => {
+        res.status(200).send({deviceColor});
+      })
+      .catch((error) => {
+        console.error('Failed to find user:', error);
+        res.sendStatus(500);
+      });
+  } else {
+    res.status(200).send(null);
+  }
+});
+
+
+// used to handle updating user device color preferences in database
 router.patch("/device-color/:id", async (req, res) => {
   const { passport } = req.session;
-  const { id } = req.params;
   const { deviceColor } = req.body;
-  // need to authenticate, but need to do that later once api is available
 
-  // Once auth is available change _id to the passport version and then check
-  // for auth before attempting to update color
   try {
-    const user = await User.findById(id);
-    // if (!passport) return res.status(404).send("User not found"); / comment out for now
+    const user = await User.findById(passport.user.id);
+    // check for auth
+    if (!passport) return res.status(404).send("User not found");
 
-    // Setting to undefined triggers the schema default on .save()
-    // If deviceColor is null or missing, it will revert to default (sky blue)
+    // saves the user's device color choice in database, otherwise when reset to default 
+    // button is clicked on profile, it will not pass in a color causing the device to go back to default color settings
     user.deviceColor = deviceColor || "#87cefa";
 
     await user.save();
@@ -25,6 +43,7 @@ router.patch("/device-color/:id", async (req, res) => {
     if (invalidColorErr) {
       res.status(500).send(invalidColorErr);
     }
+    console.error(err);
   }
 });
 
